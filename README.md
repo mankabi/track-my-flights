@@ -1,18 +1,37 @@
 # Track My Flights
 
 I used a web-based solution to track my flight logs, which is hosted by someone who is running it voluntarily.<br>
-It works well, but I had some concerns like it might be discontinued out of sudden.<br>
-So I made it on my own. I let Claude code to build it from my sketch and rough ideas.<br>
-You can store and control all your flight logs with your own device, just like I did it.<br>
+It worked well, but I always had some concerns that it might be discontinued all of a sudden.<br>
+So I made it on my own. I let Claude Code build it from my sketch and rough ideas.<br>
+You control all your flight logs with this code. NO ACCOUNT, NO CLOUD, NO TRACKING; the app runs fully OFFLINE.
+
+![Dashboard — totals and a world map of every route flown](docs/images/dashboard.png)
+
+A **local, self-hosted flight logbook**. Log every flight you take, browse them on a world map, and get the full stats treatment — total distance in laps around Earth, top routes, longest/fastest legs, class and seat breakdowns. Your data lives in a single SQLite file on your machine.
 
 ## Features
-Built by a frequent flyer who wanted their flight history to outlive any hosted service.
 
 - **Log flights fast** — airport/airline autocomplete (searchable by code, city, or name), flight-number → airline auto-fill, automatic great-circle distance and timezone/DST-aware duration.
 - **Dashboard & world map** — route arcs on an offline vector map with zoom/pan, upcoming flights, recent flights.
 - **Statistics** — totals, records, top-10 routes/airports/airlines/aircraft, per-year table, class/seat/role distributions.
 - **Your data, portable** — one-click JSON/CSV export, JSON import, and the DB is just a file you can copy.
 - **English & Korean UI**, km/mi and 12/24-hour display preferences (browser-locale defaults). Adding a language is one JSON file.
+
+### A look around
+
+**Flights** — searchable, filterable by year, with the day-offset marks that long-haul logging actually needs.
+
+![Flight list](docs/images/flights.png)
+
+**Statistics** — totals, records, and top-10 breakdowns, per year or all-time.
+
+![Statistics](docs/images/stats.png)
+
+**Add flight** — type two airport codes and a flight number; distance, duration and the airline fill themselves in.
+
+![Add flight form](docs/images/add-flight.png)
+
+*(Screenshots use sample data.)*
 
 ## Requirements
 
