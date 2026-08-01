@@ -1,7 +1,11 @@
 # Track My Flights
 
-A **local, self-hosted flight logbook**. Log every flight you take, browse them on a world map, and get the full stats treatment — total distance in laps around Earth, top routes, longest/fastest legs, class and seat breakdowns. Your data lives in a single SQLite file on your machine. No account, no cloud, no tracking; the app runs fully offline.
+I used a web-based solution to track my flight logs, which is hosted by someone who is running it voluntarily.
+It works well, but I had some concerns like it might be discontinued out of sudden.
+So I made it on my own. I let Claude code to build it from my scetch and rough ideas.
+You can store and control all your flight logs with your own device, just like I did it.
 
+## Features
 Built by a frequent flyer who wanted their flight history to outlive any hosted service.
 
 - **Log flights fast** — airport/airline autocomplete (searchable by code, city, or name), flight-number → airline auto-fill, automatic great-circle distance and timezone/DST-aware duration.
