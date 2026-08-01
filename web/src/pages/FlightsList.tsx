@@ -1,0 +1,248 @@
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { api, type Flight } from "../lib/api";
+import {
+  formatDate,
+  formatDayOffset,
+  formatDuration,
+  formatNumber,
+  travelClassBadge,
+} from "../lib/format";
+import { formatClock, formatDistance, useUnits } from "../lib/units";
+import Card from "../components/Card";
+import PillTabs from "../components/PillTabs";
+import ConfirmModal from "../components/ConfirmModal";
+import { CommentIcon, EditIcon, SearchIcon, TrashIcon } from "../components/icons";
+import { useI18n } from "../i18n";
+
+type SortOrder = "desc" | "asc";
+
+export default function FlightsList() {
+  const { t, tn, lang } = useI18n();
+  const { distanceUnit, timeFormat } = useUnits();
+  const navigate = useNavigate();
+  const [flights, setFlights] = useState<Flight[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [year, setYear] = useState("all");
+  const [sort, setSort] = useState<SortOrder>("desc");
+  const [pendingDelete, setPendingDelete] = useState<Flight | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const load = () => {
+    api
+      .flights.list("all")
+      .then(setFlights)
+      .catch((e) => setError(e instanceof Error ? e.message : String(e)));
+  };
+
+  useEffect(load, []);
+
+  const years = useMemo(() => {
+    const set = new Set((flights ?? []).map((f) => f.date.slice(0, 4)));
+    return [...set].sort((a, b) => b.localeCompare(a));
+  }, [flights]);
+
+  const filtered = useMemo(() => {
+    let rows = flights ?? [];
+    if (year !== "all") rows = rows.filter((f) => f.date.slice(0, 4) === year);
+    const q = query.trim().toLowerCase();
+    if (q) {
+      rows = rows.filter((f) => {
+        const hay = [
+          f.dep_iata,
+          f.arr_iata,
+          f.dep_city,
+          f.arr_city,
+          f.dep_airport_name,
+          f.arr_airport_name,
+          f.dep_country,
+          f.arr_country,
+          f.airline,
+          f.flight_no,
+          f.aircraft_type,
+          f.aircraft_reg,
+          f.aircraft_name,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return hay.includes(q);
+      });
+    }
+    const sorted = [...rows].sort((a, b) => a.seq - b.seq);
+    if (sort === "desc") sorted.reverse();
+    return sorted;
+  }, [flights, year, query, sort]);
+
+  const requestDelete = (f: Flight) => setPendingDelete(f);
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    setDeleting(true);
+    try {
+      await api.flights.remove(pendingDelete.id);
+      setPendingDelete(null);
+      load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-6 px-6 py-8">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-xl font-semibold text-navy-900">{t("list.title")}</h1>
+        <Link
+          to="/flights/new"
+          className="rounded-full bg-navy-900 px-5 py-2 text-sm font-medium text-white hover:bg-navy-800"
+        >
+          {t("list.addNew")}
+        </Link>
+      </div>
+
+      {error && (
+        <Card className="border-red-200 bg-red-50 text-sm text-red-600">
+          {t("list.loadError", { error })}
+        </Card>
+      )}
+
+      <Card className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="relative w-full max-w-sm">
+            <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+              <SearchIcon size={16} />
+            </span>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t("list.searchPlaceholder")}
+              className="w-full rounded-full border border-slate-200 py-2 pl-9 pr-4 text-sm focus:border-navy-600 focus:outline-none"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSort(sort === "desc" ? "asc" : "desc")}
+              className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:border-navy-600 hover:text-navy-800"
+            >
+              {sort === "desc" ? t("list.sortDesc") : t("list.sortAsc")}
+            </button>
+          </div>
+        </div>
+        <PillTabs
+          value={year}
+          onChange={setYear}
+          options={[{ value: "all", label: t("list.all") }, ...years.map((y) => ({ value: y, label: y }))]}
+        />
+        <p className="text-sm text-slate-400">{tn("list.totalCount", filtered.length, { n: formatNumber(filtered.length, lang) })}</p>
+      </Card>
+
+      <Card className="overflow-x-auto p-0">
+        <table className="w-full min-w-[960px] border-collapse text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 text-left text-xs text-slate-400">
+              <th className="px-4 py-3 font-medium">#</th>
+              <th className="px-4 py-3 font-medium">{t("list.colDate")}</th>
+              <th className="px-4 py-3 font-medium">{t("list.colDep")}</th>
+              <th className="px-4 py-3 font-medium">{t("list.colArr")}</th>
+              <th className="px-4 py-3 font-medium">{t("list.colDistanceDuration")}</th>
+              <th className="px-4 py-3 font-medium">{t("list.colAirline")}</th>
+              <th className="px-4 py-3 font-medium">{t("list.colAircraft")}</th>
+              <th className="px-4 py-3 font-medium">{t("list.colSeat")}</th>
+              <th className="px-4 py-3 font-medium"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((f) => (
+              <tr key={f.id} className="group border-b border-slate-100 last:border-0 hover:bg-sky-100/40">
+                <td className="px-4 py-3 align-top text-slate-400">{f.seq}</td>
+                <td className="px-4 py-3 align-top">
+                  <div className="font-medium text-navy-800">{formatDate(f.date, lang)}</div>
+                  <div className="text-xs text-slate-400">
+                    {formatClock(f.dep_time, timeFormat)} → {formatClock(f.arr_time, timeFormat)}
+                    {f.arr_day_offset !== 0 && (
+                      <sup className="ml-0.5 text-navy-600">{formatDayOffset(f.arr_day_offset)}</sup>
+                    )}
+                  </div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  <div className="font-semibold tracking-wide text-navy-900">{f.dep_iata}</div>
+                  <div className="text-xs text-slate-400">{f.dep_city ?? "-"}</div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  <div className="font-semibold tracking-wide text-navy-900">{f.arr_iata}</div>
+                  <div className="text-xs text-slate-400">{f.arr_city ?? "-"}</div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  <div className="text-navy-800">{formatDistance(f.distance_km, distanceUnit, lang)}</div>
+                  <div className="text-xs text-slate-400">{formatDuration(f.duration_min)}</div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  <div className="text-navy-800">{f.airline ?? "-"}</div>
+                  <div className="text-xs text-slate-400">{f.flight_no ?? "-"}</div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  <div className="text-navy-800">{f.aircraft_type ?? "-"}</div>
+                  <div className="text-xs text-slate-400">{f.aircraft_reg ?? ""}</div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  <div className="flex items-center gap-1.5">
+                    <span className="rounded-full bg-sky-100 px-2 py-0.5 text-xs font-semibold text-navy-800">
+                      {travelClassBadge(f.travel_class)}
+                    </span>
+                    <span className="text-xs text-slate-400">{f.seat ?? ""}</span>
+                  </div>
+                </td>
+                <td className="px-4 py-3 align-top">
+                  <div className="flex items-center justify-end gap-2">
+                    {f.comment && (
+                      <span title={f.comment} className="text-slate-400">
+                        <CommentIcon size={14} />
+                      </span>
+                    )}
+                    <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/flights/${f.id}/edit`)}
+                        className="rounded-full p-1.5 text-slate-400 hover:bg-white hover:text-navy-800"
+                        aria-label={t("list.editAria")}
+                      >
+                        <EditIcon size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => requestDelete(f)}
+                        className="rounded-full p-1.5 text-slate-400 hover:bg-white hover:text-red-600"
+                        aria-label={t("list.deleteAria")}
+                      >
+                        <TrashIcon size={15} />
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {flights && filtered.length === 0 && (
+          <p className="py-10 text-center text-sm text-slate-400">{t("list.emptyFiltered")}</p>
+        )}
+      </Card>
+
+      <ConfirmModal
+        open={pendingDelete != null}
+        title={
+          pendingDelete
+            ? t("list.deleteConfirmTitle", { dep: pendingDelete.dep_iata, arr: pendingDelete.arr_iata })
+            : ""
+        }
+        description={pendingDelete ? t("list.deleteConfirmDesc", { date: formatDate(pendingDelete.date, lang) }) : undefined}
+        confirmLabel={deleting ? t("list.deletingLabel") : t("list.deleteLabel")}
+        onConfirm={confirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
+    </div>
+  );
+}

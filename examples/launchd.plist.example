@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- macOS LaunchAgent template: auto-start Track My Flights on login, restart on crash.
+     1. Replace every YOUR_* placeholder below.
+     2. cp this file to ~/Library/LaunchAgents/com.YOUR_NAME.trackmyflights.plist
+     3. launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.YOUR_NAME.trackmyflights.plist
+     Stop:    launchctl bootout gui/$(id -u)/com.YOUR_NAME.trackmyflights
+     Restart: launchctl kickstart -k gui/$(id -u)/com.YOUR_NAME.trackmyflights
+     Remember to `npm run build` first — the production server serves web/dist. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.YOUR_NAME.trackmyflights</string>
+  <key>WorkingDirectory</key>
+  <string>/YOUR/PATH/TO/track-my-flights</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/YOUR/PATH/TO/npm</string>
+    <string>run</string>
+    <string>start</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>15</integer>
+  <key>StandardOutPath</key>
+  <string>/YOUR/PATH/TO/track-my-flights/logs/server.log</string>
+  <key>StandardErrorPath</key>
+  <string>/YOUR/PATH/TO/track-my-flights/logs/server.err.log</string>
+</dict>
+</plist>

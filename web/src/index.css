@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, sans-serif;
+  --color-navy-950: #041c38;
+  --color-navy-900: #042c53;
+  --color-navy-800: #0c447c;
+  --color-navy-600: #185fa5;
+  --color-sky-300: #85b7eb;
+  --color-sky-100: #e6f1fb;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: #f7f9fc;
+  color: #1c2733;
+}

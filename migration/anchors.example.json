@@ -1,0 +1,34 @@
+{
+  "_readme": "Cross-check anchors for `npm run verify`. Fill these numbers from your PREVIOUS flight-log system's statistics page (screenshot it before it disappears), then copy this file to migration/anchors.json. verify compares your imported DB against these anchors and reports PASS/FAIL per item. Only rows with a migration number (fm_no) are checked, so the app stays verifiable after you keep adding flights. All values below are FAKE placeholders — replace every one of them with your own.",
+  "_notes": "scope = domestic/intra-continental/inter-continental counts by comparing departure vs arrival country/continent (see server/lib/geo.ts classifyFlight). Top lists: order does not matter, only the per-entry counts and the sorted count sequence are compared; include as many entries as your old system showed. classes/seatPos: 'none' = flights with the field empty.",
+  "totalFlights": 42,
+  "totalKm": 123456,
+  "totalMin": 9876,
+  "scope": { "domestic": 10, "intra": 20, "inter": 12 },
+  "records": {
+    "longestKm": { "route": "JFK-LHR", "km": 5541 },
+    "longestMin": { "route": "JFK-LHR", "min": 420 },
+    "shortestKm": { "route": "AAA-BBB", "km": 300 },
+    "shortestMin": { "route": "AAA-BBB", "min": 50 },
+    "fastestKmh": { "route": "JFK-LHR", "kmh": 900 },
+    "slowestKmh": { "route": "AAA-BBB", "kmh": 350 },
+    "avgKm": 2900,
+    "avgMin": 235
+  },
+  "topRoutes": [["JFK-LHR", 8], ["LHR-JFK", 7], ["AAA-BBB", 3]],
+  "topAirports": [["JFK", 16], ["LHR", 15], ["AAA", 4]],
+  "topAirlines": [["Example Air", 20], ["Sample Airlines", 12]],
+  "topAircraft": [["Boeing 777-300", 9], ["Airbus A350-900", 7]],
+  "distinct": {
+    "airports": 12,
+    "airlines": 6,
+    "aircraftTypes": 8,
+    "registrations": 2,
+    "routes": 18,
+    "countries": 7
+  },
+  "classes": { "economy": 30, "economyplus": 2, "business": 8, "first": 0, "none": 2 },
+  "seatPos": { "window": 15, "middle": 3, "aisle": 20, "none": 4 },
+  "roles": { "passenger": 42 },
+  "reasons": { "personal": 25, "business": 17 }
+}
