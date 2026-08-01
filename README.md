@@ -1,9 +1,9 @@
 # Track My Flights
 
-I used a web-based solution to track my flight logs, which is hosted by someone who is running it voluntarily.
-It works well, but I had some concerns like it might be discontinued out of sudden.
-So I made it on my own. I let Claude code to build it from my scetch and rough ideas.
-You can store and control all your flight logs with your own device, just like I did it.
+I used a web-based solution to track my flight logs, which is hosted by someone who is running it voluntarily.<br>
+It works well, but I had some concerns like it might be discontinued out of sudden.<br>
+So I made it on my own. I let Claude code to build it from my sketch and rough ideas.<br>
+You can store and control all your flight logs with your own device, just like I did it.<br>
 
 ## Features
 Built by a frequent flyer who wanted their flight history to outlive any hosted service.
