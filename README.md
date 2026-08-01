@@ -1,5 +1,7 @@
 # Track My Flights
 
+**English** · [한국어](docs/README_ko.md)
+
 I used a web-based solution to track my flight logs, which is hosted by someone who is running it voluntarily.<br>
 It worked well, but I always had some concerns that it might be discontinued all of a sudden.<br>
 So I made it on my own. I let Claude Code build it from my sketch and rough ideas.<br>
