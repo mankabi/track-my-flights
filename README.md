@@ -5,7 +5,7 @@
 I used a web-based solution to track my flight logs, which is hosted by someone who is running it voluntarily.<br>
 It worked well, but I always had some concerns that it might be discontinued all of a sudden.<br>
 So I made it on my own. I let Claude Code build it from my sketch and rough ideas.<br>
-You control all your flight logs with this code. NO ACCOUNT, NO CLOUD, NO TRACKING; the app runs fully OFFLINE.
+You control all your flight logs with this code. **NO ACCOUNT, NO CLOUD, NO TRACKING**; the app runs fully OFFLINE.
 
 ![Dashboard — totals and a world map of every route flown](docs/images/dashboard.png)
 
