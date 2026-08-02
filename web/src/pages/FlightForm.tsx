@@ -398,8 +398,11 @@ export default function FlightForm() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
           <h2 className="mb-4 text-sm font-semibold text-ink-muted">{t("form.sectionRoute")}</h2>
+          {/* min-w-0 필수: flex 자식의 기본 min-width:auto는 내용의 min-content 폭 아래로 줄지 못하게 막는다.
+              공항명 <p>가 truncate(white-space:nowrap)라 긴 이름(예: Charles de Gaulle International Airport)이
+              그대로 최소폭이 되어 항목이 부풀고 행이 카드 밖으로 삐져나왔다(v1.6에서 실제 발생). */}
           <div className="flex items-end gap-3">
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               <AirportInput
                 label={t("form.depLabel")}
                 value={form.dep_iata}
@@ -417,7 +420,7 @@ export default function FlightForm() {
             >
               <SwapIcon size={18} />
             </button>
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               <AirportInput
                 label={t("form.arrLabel")}
                 value={form.arr_iata}
