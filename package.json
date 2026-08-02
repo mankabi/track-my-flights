@@ -1,6 +1,6 @@
 {
   "name": "track-my-flights",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "type": "module",
   "description": "Track My Flights — a local, self-hosted flight logbook",
@@ -14,9 +14,11 @@
     "seed:airports": "tsx scripts/seed-airports.ts",
     "seed:airlines": "tsx scripts/seed-airlines.ts",
     "verify": "tsx migration/verify.ts",
-    "test": "tsx --test server/lib/*.test.ts migration/*.test.ts",
+    "test": "tsx --test server/lib/*.test.ts migration/*.test.ts migration/lib/*.test.ts",
     "i18n:check": "node scripts/i18n-check.mjs",
+    "theme:check": "node scripts/theme-check.mjs",
     "import:json": "tsx migration/import-json.ts",
+    "import:fr24": "tsx migration/import-fr24.ts",
     "publish:oss": "node scripts/publish-oss.mjs"
   },
   "dependencies": {

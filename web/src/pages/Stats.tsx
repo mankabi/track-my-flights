@@ -23,6 +23,7 @@ const CLASS_ITEMS: { key: string; labelKey: MsgKey }[] = [
   { key: "economyplus", labelKey: "common.classEconomyPlus" },
   { key: "business", labelKey: "common.classBusiness" },
   { key: "first", labelKey: "common.classFirst" },
+  { key: "private", labelKey: "common.classPrivate" },
   { key: "none", labelKey: "common.unspecified" },
 ];
 const SEAT_POS_ITEMS: { key: string; labelKey: MsgKey }[] = [
@@ -38,7 +39,7 @@ const REASON_ITEMS: { key: string; labelKey: MsgKey }[] = [
   { key: "none", labelKey: "common.unspecified" },
 ];
 
-const SEGMENT_COLORS = ["#0c447c", "#185fa5", "#85b7eb", "#b9d6f2", "#e2e8f0"];
+const SEGMENT_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)"];
 
 export default function Stats() {
   const { t, tn, lang } = useI18n();
@@ -60,7 +61,7 @@ export default function Stats() {
   if (error) {
     return (
       <div className="mx-auto max-w-6xl px-6 py-8">
-        <Card className="border-red-200 bg-red-50 text-sm text-red-600">
+        <Card className="border-line-danger-soft bg-danger-wash text-sm text-ink-danger">
           {t("stats.loadError", { error })}
         </Card>
       </div>
@@ -70,7 +71,7 @@ export default function Stats() {
   if (!stats) {
     return (
       <div className="mx-auto max-w-6xl px-6 py-8">
-        <p className="text-sm text-slate-400">{t("common.loading")}</p>
+        <p className="text-sm text-ink-faint">{t("common.loading")}</p>
       </div>
     );
   }
@@ -84,7 +85,7 @@ export default function Stats() {
   return (
     <div className="mx-auto max-w-6xl space-y-8 px-6 py-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-xl font-semibold text-navy-900">{t("stats.title")}</h1>
+        <h1 className="text-xl font-semibold text-ink-title">{t("stats.title")}</h1>
       </div>
 
       <PillTabs
@@ -96,9 +97,9 @@ export default function Stats() {
       {/* ① 거리 / ② 시간 / ③ 편수 */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card>
-          <h2 className="mb-3 text-sm font-semibold text-slate-500">{t("stats.sectionDistance")}</h2>
-          <div className="text-2xl font-semibold text-navy-900">{formatDistance(totals.km, distanceUnit, lang)}</div>
-          <div className="text-sm text-slate-400">{formatDistance(totals.km, otherDistanceUnit, lang)}</div>
+          <h2 className="mb-3 text-sm font-semibold text-ink-muted">{t("stats.sectionDistance")}</h2>
+          <div className="text-2xl font-semibold text-ink-title">{formatDistance(totals.km, distanceUnit, lang)}</div>
+          <div className="text-sm text-ink-faint">{formatDistance(totals.km, otherDistanceUnit, lang)}</div>
           <dl className="mt-4 space-y-1.5 text-sm">
             <Row label={t("stats.earthCircum")} value={t("stats.multiplierValue", { n: formatFixed(totals.earthCircum, 2) })} />
             <Row label={t("stats.moonDist")} value={t("stats.multiplierValue", { n: formatFixed(totals.moonDist, 3) })} />
@@ -106,8 +107,8 @@ export default function Stats() {
           </dl>
         </Card>
         <Card>
-          <h2 className="mb-3 text-sm font-semibold text-slate-500">{t("stats.sectionDuration")}</h2>
-          <div className="text-2xl font-semibold text-navy-900">{formatDuration(totals.min)}</div>
+          <h2 className="mb-3 text-sm font-semibold text-ink-muted">{t("stats.sectionDuration")}</h2>
+          <div className="text-2xl font-semibold text-ink-title">{formatDuration(totals.min)}</div>
           <dl className="mt-4 space-y-1.5 text-sm">
             <Row label={t("stats.day")} value={tn("stats.dayValue", day, { n: formatFixed(day, 1) })} />
             <Row label={t("stats.week")} value={tn("stats.weekValue", week, { n: formatFixed(week, 1) })} />
@@ -116,8 +117,8 @@ export default function Stats() {
           </dl>
         </Card>
         <Card>
-          <h2 className="mb-3 text-sm font-semibold text-slate-500">{t("stats.sectionFlights")}</h2>
-          <div className="text-2xl font-semibold text-navy-900">{tn("stats.flightCount", totals.flights, { n: formatNumber(totals.flights, lang) })}</div>
+          <h2 className="mb-3 text-sm font-semibold text-ink-muted">{t("stats.sectionFlights")}</h2>
+          <div className="text-2xl font-semibold text-ink-title">{tn("stats.flightCount", totals.flights, { n: formatNumber(totals.flights, lang) })}</div>
           <dl className="mt-4 space-y-1.5 text-sm">
             <Row label={t("stats.domestic")} value={tn("stats.flightCount", stats.scope.domestic, { n: formatNumber(stats.scope.domestic, lang) })} />
             <Row label={t("stats.intra")} value={tn("stats.flightCount", stats.scope.intra, { n: formatNumber(stats.scope.intra, lang) })} />
@@ -128,7 +129,7 @@ export default function Stats() {
 
       {/* ④ 기록 */}
       <Card>
-        <h2 className="mb-4 text-sm font-semibold text-slate-500">{t("stats.sectionRecords")}</h2>
+        <h2 className="mb-4 text-sm font-semibold text-ink-muted">{t("stats.sectionRecords")}</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <RecordLine label={t("stats.longestDistance")} r={stats.records.longestKm} />
           <RecordLine label={t("stats.longestDuration")} r={stats.records.longestMin} />
@@ -136,9 +137,9 @@ export default function Stats() {
           <RecordLine label={t("stats.shortestDuration")} r={stats.records.shortestMin} />
           <RecordLine label={t("stats.fastest")} r={stats.records.fastest} extraKmh />
           <RecordLine label={t("stats.slowest")} r={stats.records.slowest} extraKmh />
-          <div className="rounded-xl bg-sky-100/50 px-4 py-3">
-            <div className="text-xs text-slate-500">{t("stats.average")}</div>
-            <div className="mt-0.5 text-sm text-navy-800">
+          <div className="rounded-xl bg-accent-wash/50 px-4 py-3">
+            <div className="text-xs text-ink-muted">{t("stats.average")}</div>
+            <div className="mt-0.5 text-sm text-ink-brand">
               {formatDistance(stats.records.avgKm, distanceUnit, lang)} · {formatDuration(stats.records.avgMin)}
             </div>
           </div>
@@ -171,24 +172,24 @@ export default function Stats() {
 
       {/* ⑥ Top10 루트 */}
       <Card>
-        <h2 className="mb-4 text-sm font-semibold text-slate-500">{t("stats.sectionTopRoutes")}</h2>
+        <h2 className="mb-4 text-sm font-semibold text-ink-muted">{t("stats.sectionTopRoutes")}</h2>
         <div className="grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-2">
           {stats.topRoutes.map(([route, n], i) => {
             const [dep, arr] = route.split("-");
             const max = stats.topRoutes[0]?.[1] ?? 1;
             return (
               <div key={route} className="flex items-center gap-3 py-1">
-                <span className="w-5 shrink-0 text-xs text-slate-400">{i + 1}</span>
-                <span className="w-28 shrink-0 font-medium text-navy-900">
+                <span className="w-5 shrink-0 text-xs text-ink-faint">{i + 1}</span>
+                <span className="w-28 shrink-0 font-medium text-ink-title">
                   {dep} → {arr}
                 </span>
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-inset">
                   <div
-                    className="h-full rounded-full bg-navy-600"
+                    className="h-full rounded-full bg-accent"
                     style={{ width: `${(n / max) * 100}%` }}
                   />
                 </div>
-                <span className="w-8 shrink-0 text-right text-sm text-slate-500">{n}</span>
+                <span className="w-8 shrink-0 text-right text-sm text-ink-muted">{n}</span>
               </div>
             );
           })}
@@ -204,7 +205,7 @@ export default function Stats() {
 
       {/* ⑧ 카운트 요약 */}
       <Card>
-        <h2 className="mb-4 text-sm font-semibold text-slate-500">{t("stats.sectionCountSummary")}</h2>
+        <h2 className="mb-4 text-sm font-semibold text-ink-muted">{t("stats.sectionCountSummary")}</h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           <CountTile label={t("stats.countAirports")} value={stats.distinct.airports} />
           <CountTile label={t("stats.countAirlines")} value={stats.distinct.airlines} />
@@ -221,8 +222,8 @@ export default function Stats() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between">
-      <dt className="text-slate-400">{label}</dt>
-      <dd className="font-medium text-navy-800">{value}</dd>
+      <dt className="text-ink-faint">{label}</dt>
+      <dd className="font-medium text-ink-brand">{value}</dd>
     </div>
   );
 }
@@ -243,17 +244,17 @@ function RecordLine({ label, r, extraKmh }: { label: string; r: RecordSummary | 
   const { t, lang } = useI18n();
   const { distanceUnit } = useUnits();
   return (
-    <div className="rounded-xl bg-sky-100/50 px-4 py-3">
-      <div className="text-xs text-slate-500">{label}</div>
+    <div className="rounded-xl bg-accent-wash/50 px-4 py-3">
+      <div className="text-xs text-ink-muted">{label}</div>
       {r ? (
-        <div className="mt-0.5 text-sm text-navy-800">
+        <div className="mt-0.5 text-sm text-ink-brand">
           {formatDistance(r.km, distanceUnit, lang)} · {formatDuration(r.min)}
           {/* 속도(km/h)는 거리 단위 선호와 무관 — mph 환산은 D32 스코프 밖(거리 단위 설정만 존재) */}
           {extraKmh && r.kmh != null ? ` · ${formatNumber(r.kmh, lang)} km/h` : ""} · {r.dep} → {r.arr} ·{" "}
           {formatDate(r.date, lang)}
         </div>
       ) : (
-        <div className="mt-0.5 text-sm text-slate-400">{t("stats.noRecord")}</div>
+        <div className="mt-0.5 text-sm text-ink-faint">{t("stats.noRecord")}</div>
       )}
     </div>
   );
@@ -272,23 +273,23 @@ function TopList({
   const max = items[0]?.count ?? 1;
   return (
     <Card>
-      <h2 className="mb-4 text-sm font-semibold text-slate-500">{title}</h2>
+      <h2 className="mb-4 text-sm font-semibold text-ink-muted">{title}</h2>
       <div className="space-y-2.5">
-        {items.length === 0 && <p className="text-sm text-slate-400">{t("stats.noData")}</p>}
+        {items.length === 0 && <p className="text-sm text-ink-faint">{t("stats.noData")}</p>}
         {items.map((item, i) => (
           <div key={item.key}>
             <div className="flex items-center justify-between text-sm">
               <span className="flex items-center gap-2 truncate">
-                <span className="w-4 shrink-0 text-xs text-slate-400">{i + 1}</span>
-                <span className="truncate font-medium text-navy-900">{item.name}</span>
-                {item.sub && <span className="truncate text-xs text-slate-400">{item.sub}</span>}
+                <span className="w-4 shrink-0 text-xs text-ink-faint">{i + 1}</span>
+                <span className="truncate font-medium text-ink-title">{item.name}</span>
+                {item.sub && <span className="truncate text-xs text-ink-faint">{item.sub}</span>}
               </span>
-              <span className="shrink-0 pl-2 text-xs text-slate-500">
+              <span className="shrink-0 pl-2 text-xs text-ink-muted">
                 {item.count} · {formatPercent(item.count, total)}%
               </span>
             </div>
-            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-100">
-              <div className="h-full rounded-full bg-navy-600" style={{ width: `${(item.count / max) * 100}%` }} />
+            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-inset">
+              <div className="h-full rounded-full bg-accent" style={{ width: `${(item.count / max) * 100}%` }} />
             </div>
           </div>
         ))}
@@ -310,8 +311,8 @@ function Distribution({
   const total = items.reduce((s, it) => s + (counts[it.key] ?? 0), 0);
   return (
     <Card>
-      <h2 className="mb-3 text-sm font-semibold text-slate-500">{title}</h2>
-      <div className="flex h-2.5 overflow-hidden rounded-full bg-slate-100">
+      <h2 className="mb-3 text-sm font-semibold text-ink-muted">{title}</h2>
+      <div className="flex h-2.5 overflow-hidden rounded-full bg-surface-inset">
         {items.map((it, i) => {
           const c = counts[it.key] ?? 0;
           if (!c) return null;
@@ -326,14 +327,14 @@ function Distribution({
       <ul className="mt-3 space-y-1.5 text-sm">
         {items.map((it, i) => (
           <li key={it.key} className="flex items-center justify-between">
-            <span className="flex items-center gap-2 text-slate-500">
+            <span className="flex items-center gap-2 text-ink-muted">
               <span
                 className="inline-block h-2.5 w-2.5 rounded-full"
                 style={{ backgroundColor: SEGMENT_COLORS[i % SEGMENT_COLORS.length] }}
               />
               {t(it.labelKey)}
             </span>
-            <span className="font-medium text-navy-800">
+            <span className="font-medium text-ink-brand">
               {counts[it.key] ?? 0} ({formatPercent(counts[it.key] ?? 0, total)}%)
             </span>
           </li>
@@ -345,9 +346,9 @@ function Distribution({
 
 function CountTile({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl bg-sky-100/50 px-4 py-3 text-center">
-      <div className="text-lg font-semibold text-navy-900">{value}</div>
-      <div className="text-xs text-slate-500">{label}</div>
+    <div className="rounded-xl bg-accent-wash/50 px-4 py-3 text-center">
+      <div className="text-lg font-semibold text-ink-title">{value}</div>
+      <div className="text-xs text-ink-muted">{label}</div>
     </div>
   );
 }

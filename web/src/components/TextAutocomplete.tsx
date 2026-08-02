@@ -45,7 +45,7 @@ export default function TextAutocomplete({ label, value, onChange, options, plac
 
   return (
     <div className="relative">
-      <label className="mb-1 block text-xs font-medium text-slate-500">{label}</label>
+      <label className="mb-1 block text-xs font-medium text-ink-muted">{label}</label>
       <input
         value={value}
         onChange={(e) => {
@@ -57,10 +57,10 @@ export default function TextAutocomplete({ label, value, onChange, options, plac
         onFocus={() => setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-navy-900 focus:border-navy-600 focus:outline-none"
+        className="w-full rounded-xl border border-line px-3 py-2 text-sm text-ink-title focus:border-line-accent focus:outline-none"
       />
       {open && filtered.length > 0 && (
-        <ul className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+        <ul className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-xl border border-line bg-surface py-1 shadow-lg">
           {filtered.map((o, i) => (
             <li key={o.v}>
               <button
@@ -69,11 +69,11 @@ export default function TextAutocomplete({ label, value, onChange, options, plac
                 onMouseEnter={() => setActiveIndex(i)}
                 onClick={() => select(o.v)}
                 className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm ${
-                  i === activeIndex ? "bg-sky-100/60" : "hover:bg-sky-100/60"
+                  i === activeIndex ? "bg-accent-wash/60" : "hover:bg-accent-wash/60"
                 }`}
               >
-                <span className="text-navy-800">{o.v}</span>
-                <span className="text-xs text-slate-400">{tn("common.usedCount", o.n)}</span>
+                <span className="text-ink-brand">{o.v}</span>
+                <span className="text-xs text-ink-faint">{tn("common.usedCount", o.n)}</span>
               </button>
             </li>
           ))}

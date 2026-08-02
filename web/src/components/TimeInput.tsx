@@ -73,6 +73,19 @@ export default function TimeInput({ label, value, onChange, error, format = "h24
   const hourList = format === "h12" ? HOURS12 : HOURS24;
   const activeHour = format === "h12" ? h12 : h24;
 
+  // D35: 12h 모드에서 AM/PM 없이 "7:30"을 치면 07:30으로 읽는다 — 12h 모드에서도 24h 타이핑("16:00")을
+  // 받아주기로 한 설계상 불가피하다("PM으로 추측"은 같은 입력이 다른 값이 되므로 기각). 지금까지 그 해석은
+  // blur 후에야 보였다 → 파싱되는 즉시 필드 아래에 결과를 에코해 타이핑 중에 드러낸다.
+  // 입력 원문과 표시형이 같아지면(= "7:30 PM"까지 다 친 뒤, 피커 선택, 편집 모드 로드) 저절로 사라진다.
+  // h24 모드는 해석이 애매할 여지가 없으므로 에코하지 않는다. 문자열이 시각값뿐이라 카탈로그 추가도 없다.
+  const echo = (() => {
+    if (format !== "h12") return null;
+    const parsed = parseDraft(draft, format);
+    if (!parsed) return null;
+    const shown = display(parsed, format);
+    return shown === draft.trim() ? null : shown;
+  })();
+
   useEffect(() => {
     if (!open) return;
     const scrollTo = (list: HTMLUListElement | null, target: string | null) => {
@@ -117,7 +130,7 @@ export default function TimeInput({ label, value, onChange, error, format = "h24
 
   return (
     <div className="relative">
-      <label className="mb-1 block text-xs font-medium text-slate-500">{label}</label>
+      <label className="mb-1 block text-xs font-medium text-ink-muted">{label}</label>
       <input
         type="text"
         value={draft}
@@ -138,14 +151,18 @@ export default function TimeInput({ label, value, onChange, error, format = "h24
           if (parsed) commit(parsed); // blur 시 표시 정규화 ("4:00pm" → "4:00 PM")
         }}
         placeholder={format === "h12" ? "H:MM AM" : "HH:MM"}
-        className={`w-full rounded-xl border bg-white px-3 py-2 text-sm text-navy-900 focus:outline-none ${
-          error ? "border-red-400" : "border-slate-200 focus:border-navy-600"
+        className={`w-full rounded-xl border bg-surface px-3 py-2 text-sm text-ink-title focus:outline-none ${
+          error ? "border-line-danger" : "border-line focus:border-line-accent"
         }`}
       />
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      {error ? (
+        <p className="mt-1 text-xs text-ink-danger">{error}</p>
+      ) : echo ? (
+        <p className="mt-1 text-xs text-ink-faint">→ {echo}</p>
+      ) : null}
       {open && (
-        <div className="absolute z-20 mt-1 flex w-full min-w-[150px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
-          <ul ref={hourListRef} className="h-48 flex-1 overflow-y-auto border-r border-slate-100 py-1">
+        <div className="absolute z-20 mt-1 flex w-full min-w-[150px] overflow-hidden rounded-xl border border-line bg-surface shadow-lg">
+          <ul ref={hourListRef} className="h-48 flex-1 overflow-y-auto border-r border-line-soft py-1">
             {hourList.map((hh) => (
               <li key={hh} data-v={hh}>
                 <button
@@ -153,7 +170,7 @@ export default function TimeInput({ label, value, onChange, error, format = "h24
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => pickHour(hh)}
                   className={`w-full px-3 py-1.5 text-center text-sm ${
-                    hh === activeHour ? "bg-sky-100/60 font-semibold text-navy-900" : "text-slate-600 hover:bg-sky-100/60"
+                    hh === activeHour ? "bg-accent-wash/60 font-semibold text-ink-title" : "text-ink-soft hover:bg-accent-wash/60"
                   }`}
                 >
                   {hh}
@@ -161,7 +178,7 @@ export default function TimeInput({ label, value, onChange, error, format = "h24
               </li>
             ))}
           </ul>
-          <ul ref={minuteListRef} className={`h-48 flex-1 overflow-y-auto py-1 ${format === "h12" ? "border-r border-slate-100" : ""}`}>
+          <ul ref={minuteListRef} className={`h-48 flex-1 overflow-y-auto py-1 ${format === "h12" ? "border-r border-line-soft" : ""}`}>
             {MINUTES.map((mm) => (
               <li key={mm} data-v={mm}>
                 <button
@@ -169,7 +186,7 @@ export default function TimeInput({ label, value, onChange, error, format = "h24
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => pickMinute(mm)}
                   className={`w-full px-3 py-1.5 text-center text-sm ${
-                    mm === min ? "bg-sky-100/60 font-semibold text-navy-900" : "text-slate-600 hover:bg-sky-100/60"
+                    mm === min ? "bg-accent-wash/60 font-semibold text-ink-title" : "text-ink-soft hover:bg-accent-wash/60"
                   }`}
                 >
                   {mm}
@@ -186,7 +203,7 @@ export default function TimeInput({ label, value, onChange, error, format = "h24
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => pickMeridiem(mer)}
                     className={`w-full px-2 py-1.5 text-center text-sm ${
-                      mer === meridiem ? "bg-sky-100/60 font-semibold text-navy-900" : "text-slate-600 hover:bg-sky-100/60"
+                      mer === meridiem ? "bg-accent-wash/60 font-semibold text-ink-title" : "text-ink-soft hover:bg-accent-wash/60"
                     }`}
                   >
                     {mer}

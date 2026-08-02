@@ -16,7 +16,7 @@ A **local, self-hosted flight logbook**. Log every flight you take, browse them 
 - **Log flights fast** — airport/airline autocomplete (searchable by code, city, or name), flight-number → airline auto-fill, automatic great-circle distance and timezone/DST-aware duration.
 - **Dashboard & world map** — route arcs on an offline vector map with zoom/pan, upcoming flights, recent flights.
 - **Statistics** — totals, records, top-10 routes/airports/airlines/aircraft, per-year table, class/seat/role distributions.
-- **Your data, portable** — one-click JSON/CSV export, JSON import, and the DB is just a file you can copy.
+- **Your data, portable** — one-click JSON/CSV export, JSON import, MyFlightRadar24 CSV import, and the DB is just a file you can copy.
 - **English & Korean UI**, km/mi and 12/24-hour display preferences (browser-locale defaults). Adding a language is one JSON file.
 
 ### A look around
@@ -37,8 +37,11 @@ A **local, self-hosted flight logbook**. Log every flight you take, browse them 
 
 ## Requirements
 
-- Node.js 20+ and npm
-- macOS, Linux, or Windows (better-sqlite3 builds natively; macOS needs Xcode Command Line Tools)
+- **Node.js 20+ and npm** — install from [nodejs.org](https://nodejs.org/) (Windows/macOS installers, or your Linux package manager).
+- **A C++ build toolchain, needed only as a fallback.** `better-sqlite3` (the SQLite driver) ships prebuilt binaries for most platforms/Node versions, so `npm install` usually needs nothing else — you do **not** install SQLite itself separately, better-sqlite3 bundles it. If your exact platform + Node version has no matching prebuilt, npm compiles it from source instead, which needs a compiler:
+  - **Windows**: easiest is [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/) (under "Tools for Visual Studio") — during setup, check **"Desktop development with C++"**. With [Chocolatey](https://chocolatey.org/) installed, one line does it instead: `choco install python visualstudio2022-workload-vctools -y`.
+  - **macOS**: `xcode-select --install`.
+  - **Linux**: a C/C++ toolchain, e.g. `sudo apt install build-essential` on Debian/Ubuntu — usually already present.
 
 ## Quick start
 
@@ -63,9 +66,17 @@ npm run import:json -- my-flights.json
 
 Optionally, record the statistics your old system showed (total distance, top routes, …) into `migration/anchors.json` (start from `migration/anchors.example.json`) and run `npm run verify` — it cross-checks the imported database against those numbers so you *know* nothing was lost in translation. That verification loop is the heart of this project: the numbers must survive the move.
 
+Coming from **MyFlightRadar24**? Export your flights as CSV from its settings page and load the file directly — airports/airlines are resolved against the bundled reference data, great-circle distance is computed, and the arrival day is inferred from the reported flight duration:
+
+```bash
+npm run import:fr24 -- my-flights.csv
+```
+
+Rows the importer can't place (an airport missing from the reference data, an unparseable cell) are skipped and listed in a report rather than guessed at; see [docs/MIGRATION.md](docs/MIGRATION.md) for the full column/value mapping. Honest scoping note: this importer has been tested against hand-built synthetic CSV files shaped like FR24's documented export format, not a real downloaded export — please open an issue if your file doesn't load cleanly.
+
 ## Backup & restore
 
-The entire log is `data/flights.db`. Copy that file anywhere (it uses WAL mode — stop the server first, or use `sqlite3 data/flights.db ".backup 'backup.db'"` while running). Restoring = putting the file back. JSON export/import round-trips losslessly too (`Settings → Export`, then `npm run import:json`).
+The entire log is `data/flights.db`. Copy that file anywhere (it uses WAL mode — stop the server first, or use `sqlite3 data/flights.db ".backup 'backup.db'"` while running; on Windows that CLI isn't preinstalled — grab it from SQLite's [Precompiled Binaries for Windows](https://www.sqlite.org/download.html), or just stop the server and copy the file, no extra tools needed). Restoring = putting the file back. JSON export/import round-trips losslessly too (`Settings → Export`, then `npm run import:json`).
 
 ## Keeping it running (macOS example)
 

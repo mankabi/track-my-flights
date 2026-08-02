@@ -34,7 +34,7 @@ export default function Dashboard() {
   return (
     <div className="mx-auto max-w-6xl space-y-8 px-6 py-8">
       {error && (
-        <Card className="border-red-200 bg-red-50 text-sm text-red-600">
+        <Card className="border-line-danger-soft bg-danger-wash text-sm text-ink-danger">
           {t("dashboard.loadError", { error })}
         </Card>
       )}
@@ -65,7 +65,7 @@ export default function Dashboard() {
 
       {/* 세계지도 */}
       <Card>
-        <div className="mb-4 flex items-center gap-2 text-navy-900">
+        <div className="mb-4 flex items-center gap-2 text-ink-title">
           <GlobeIcon size={18} />
           <h2 className="text-base font-semibold">{t("dashboard.mapTitle")}</h2>
         </div>
@@ -74,17 +74,17 @@ export default function Dashboard() {
 
       {/* 다가오는 비행 */}
       {upcoming.length > 0 && (
-        <Card className="border-navy-600/30 bg-sky-100/60">
-          <h2 className="mb-4 text-base font-semibold text-navy-900">{t("dashboard.upcomingTitle")}</h2>
+        <Card className="border-line-accent/30 bg-accent-wash/60">
+          <h2 className="mb-4 text-base font-semibold text-ink-title">{t("dashboard.upcomingTitle")}</h2>
           <div className="space-y-3">
             {upcoming.map((f) => (
               <div
                 key={f.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white/80 px-4 py-3"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-surface/80 px-4 py-3"
               >
                 <RoutePair depIata={f.dep_iata} arrIata={f.arr_iata} depCity={f.dep_city} arrCity={f.arr_city} />
-                <div className="text-right text-sm text-slate-500">
-                  <div className="font-medium text-navy-800">{formatDate(f.date, lang)}</div>
+                <div className="text-right text-sm text-ink-muted">
+                  <div className="font-medium text-ink-brand">{formatDate(f.date, lang)}</div>
                   <div>
                     {f.airline ?? "-"} {f.flight_no ?? ""}
                   </div>
@@ -98,26 +98,26 @@ export default function Dashboard() {
       {/* 최근 비행 5건 */}
       <Card>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-base font-semibold text-navy-900">{t("dashboard.recentTitle")}</h2>
+          <h2 className="text-base font-semibold text-ink-title">{t("dashboard.recentTitle")}</h2>
           <Link
             to="/flights"
-            className="flex items-center gap-1 text-sm font-medium text-navy-600 hover:text-navy-800"
+            className="flex items-center gap-1 text-sm font-medium text-ink-accent hover:text-ink-brand"
           >
             {t("dashboard.viewAll")} <ChevronRightIcon size={14} />
           </Link>
         </div>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-line-soft">
           {recent.map((f) => (
             <div key={f.id} className="flex flex-wrap items-center justify-between gap-3 py-4">
               <RoutePair depIata={f.dep_iata} arrIata={f.arr_iata} depCity={f.dep_city} arrCity={f.arr_city} />
-              <div className="flex items-center gap-2 text-right text-sm text-slate-500">
+              <div className="flex items-center gap-2 text-right text-sm text-ink-muted">
                 {f.comment && (
-                  <span title={f.comment} className="text-slate-400">
+                  <span title={f.comment} className="text-ink-faint">
                     <CommentIcon size={14} />
                   </span>
                 )}
                 <div>
-                  <div className="font-medium text-navy-800">{formatDate(f.date, lang)}</div>
+                  <div className="font-medium text-ink-brand">{formatDate(f.date, lang)}</div>
                   <div>
                     {f.airline ?? "-"} {f.flight_no ?? ""}
                   </div>
@@ -126,7 +126,7 @@ export default function Dashboard() {
             </div>
           ))}
           {flights && flights.length === 0 && (
-            <p className="py-6 text-center text-sm text-slate-400">{t("dashboard.empty")}</p>
+            <p className="py-6 text-center text-sm text-ink-faint">{t("dashboard.empty")}</p>
           )}
         </div>
       </Card>
@@ -137,9 +137,9 @@ export default function Dashboard() {
 function StatTile({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <Card>
-      <div className="text-sm text-slate-500">{label}</div>
-      <div className="mt-2 text-2xl font-semibold text-navy-900">{value}</div>
-      {sub && <div className="mt-1 text-xs font-medium text-navy-600">{sub}</div>}
+      <div className="text-sm text-ink-muted">{label}</div>
+      <div className="mt-2 text-2xl font-semibold text-ink-title">{value}</div>
+      {sub && <div className="mt-1 text-xs font-medium text-ink-accent">{sub}</div>}
     </Card>
   );
 }

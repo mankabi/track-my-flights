@@ -110,6 +110,7 @@ const TRAVEL_CLASS_KEY: Record<string, MsgKey> = {
   economyplus: "common.classEconomyPlus",
   business: "common.classBusiness",
   first: "common.classFirst",
+  private: "common.classPrivate",
 };
 export function travelClassLabel(v: string | null): string {
   if (!v) return "-";
@@ -117,12 +118,14 @@ export function travelClassLabel(v: string | null): string {
   return key ? t(key) : v;
 }
 
-// 클래스 배지(Y/Y+/C/F)는 항공권 관례 약어라 언어 무관 유지.
+// 클래스 배지(Y/Y+/C/F)는 항공권 관례 약어라 언어 무관 유지. private은 상용 예약등급이 아니라 별도
+// 약어(P)를 붙인다 — D37(FR24 Flight class=5) 도입.
 const TRAVEL_CLASS_BADGE: Record<string, string> = {
   economy: "Y",
   economyplus: "Y+",
   business: "C",
   first: "F",
+  private: "P",
 };
 export function travelClassBadge(v: string | null): string {
   return v ? (TRAVEL_CLASS_BADGE[v] ?? v) : "-";

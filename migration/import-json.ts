@@ -1,19 +1,25 @@
 // Import flights from a JSON file into the flights table.
 // The format is exactly what GET /api/export/json produces ({ flights: [...] }), or a bare array —
-// so an export file round-trips back in unchanged (fields like id/seq are ignored and regenerated).
+// so an export file round-trips back in unchanged. id and seq are always regenerated (DB-assigned);
+// created_at is always regenerated too (stamped with the import time, not carried over from the file);
+// fm_no/fm_id/updated_at pass through when present so a backup export restores with its migration
+// numbers (and `npm run verify` anchors) intact.
 //
 // Usage:
 //   npm run import:json -- path/to/flights.json            (only into an EMPTY flights table)
 //   npm run import:json -- path/to/flights.json --force    (wipe & replace; dumps a backup JSON first)
+//   npm run import:json -- path/to/flights.json --dry-run  (preview: row count/date range/fm_no count
+//                                                            and any problems found — no DB writes)
 import fs from "node:fs";
 import path from "node:path";
 import { db, DB_PATH } from "../server/db.js";
+import { validateRow, formatIssuesTable, type RowIssue } from "./lib/validate.js";
 
-const args = process.argv.slice(2).filter((a) => a !== "--force");
+const dryRun = process.argv.includes("--dry-run");
 const force = process.argv.includes("--force");
-const file = args[0];
+const file = process.argv.slice(2).find((a) => a !== "--force" && a !== "--dry-run");
 if (!file) {
-  console.error("usage: npm run import:json -- <file.json> [--force]");
+  console.error("usage: npm run import:json -- <file.json> [--force] [--dry-run]");
   process.exit(1);
 }
 
@@ -34,23 +40,51 @@ const FIELDS = [
   "travel_class", "flight_role", "flight_reason", "comment", "updated_at",
 ] as const;
 
-const prepared = rows.map((r, i) => {
+// [C2-b]: field prep mirrors the API's own normalizeFlightBody (server/routes.ts) as closely as
+// possible — trim strings (empty -> null), coerce/round numeric fields — so this importer ends up
+// neither looser nor stricter than the UI/API path it is meant to mirror. Format/enum validation itself
+// is delegated to validateRow (migration/lib/validate.ts), shared with import-fr24.ts.
+const prepared = rows.map((r) => {
   const row: Record<string, unknown> = {};
-  for (const k of FIELDS) row[k] = r[k] ?? null;
-  if (typeof row.date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(row.date)) {
-    throw new Error(`row ${i + 1}: date must be YYYY-MM-DD (got ${JSON.stringify(r.date)})`);
+  for (const k of FIELDS) {
+    let v = r[k];
+    if (typeof v === "string") v = v.trim() || null;
+    row[k] = v ?? null;
   }
   for (const k of ["dep_iata", "arr_iata"] as const) {
-    if (typeof row[k] !== "string" || !/^[A-Za-z]{3}$/.test(row[k] as string)) {
-      throw new Error(`row ${i + 1}: ${k} must be a 3-letter IATA code (got ${JSON.stringify(r[k])})`);
-    }
-    row[k] = (row[k] as string).toUpperCase();
+    if (typeof row[k] === "string") row[k] = (row[k] as string).toUpperCase();
+  }
+  for (const k of ["distance_km", "duration_min"] as const) {
+    if (row[k] != null) row[k] = Math.round(Number(row[k]));
   }
   row.arr_day_offset = row.arr_day_offset == null ? 0 : Number(row.arr_day_offset);
-  if (!Number.isInteger(row.arr_day_offset)) throw new Error(`row ${i + 1}: arr_day_offset must be an integer`);
   row.flight_role = row.flight_role ?? "passenger";
   return row;
 });
+
+// [C2-b]: collect every row's problems instead of throwing on the first one — a hand-edited or
+// converted file tends to repeat the same mistake many times, and one run should surface all of them.
+const issues: RowIssue[] = prepared.flatMap((row, i) => validateRow(row, i + 1));
+
+const validDates = prepared
+  .map((r) => r.date)
+  .filter((d): d is string => typeof d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d))
+  .sort();
+const fmNoCount = prepared.filter((r) => r.fm_no != null).length;
+console.log(`rows:       ${prepared.length}`);
+console.log(`date range: ${validDates.length ? `${validDates[0]} .. ${validDates[validDates.length - 1]}` : "n/a"}`);
+console.log(`fm_no set:  ${fmNoCount}`);
+
+if (issues.length > 0) {
+  console.error(`\n${issues.length} problem(s) found — no changes made:\n`);
+  console.error(formatIssuesTable(issues));
+  process.exit(1);
+}
+
+if (dryRun) {
+  console.log(`\n--dry-run: no problems found, no changes made.`);
+  process.exit(0);
+}
 
 // Same guard as the migration tool: importing is an initial-load operation. If the table already has
 // data (including rows you edited after a previous import), refuse — unless --force, which first dumps

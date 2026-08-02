@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Track My Flights</title>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem("tmf.theme"); } catch (e) {}
+        var d = t === "dark" || (t !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.dataset.theme = d ? "dark" : "light";
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

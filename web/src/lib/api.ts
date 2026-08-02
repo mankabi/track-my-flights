@@ -3,7 +3,7 @@
 import { translateError } from "../i18n";
 
 export type SeatPos = "window" | "aisle" | "middle";
-export type TravelClass = "economy" | "economyplus" | "business" | "first";
+export type TravelClass = "economy" | "economyplus" | "business" | "first" | "private";
 export type FlightRole = "passenger" | "crew" | "cockpit";
 export type FlightReason = "personal" | "business" | "virtual";
 

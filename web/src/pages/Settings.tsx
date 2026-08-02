@@ -5,10 +5,12 @@ import { DownloadIcon } from "../components/icons";
 import { api, type HealthResult } from "../lib/api";
 import { useI18n, type Pref } from "../i18n";
 import { useUnits, type DistancePref, type TimePref } from "../lib/units";
+import { useTheme, type ThemePref } from "../lib/theme";
 
 export default function Settings() {
   const { t, tn, pref, setPref } = useI18n();
   const { distancePref, setDistancePref, timePref, setTimePref } = useUnits();
+  const { themePref, setThemePref } = useTheme();
   const [health, setHealth] = useState<HealthResult | null>(null);
 
   useEffect(() => {
@@ -28,22 +30,22 @@ export default function Settings() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-6 py-8">
-      <h1 className="text-xl font-semibold text-navy-900">{t("settings.title")}</h1>
+      <h1 className="text-xl font-semibold text-ink-title">{t("settings.title")}</h1>
 
       <Card>
-        <h2 className="mb-1 text-sm font-semibold text-slate-500">{t("settings.exportTitle")}</h2>
-        <p className="mb-4 text-sm text-slate-500">{t("settings.exportDesc")}</p>
+        <h2 className="mb-1 text-sm font-semibold text-ink-muted">{t("settings.exportTitle")}</h2>
+        <p className="mb-4 text-sm text-ink-muted">{t("settings.exportDesc")}</p>
         <div className="flex flex-wrap gap-3">
           <a
             href="/api/export/json"
-            className="flex items-center gap-2 rounded-full bg-navy-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-navy-800"
+            className="flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-ink-inverse hover:bg-brand-2"
           >
             <DownloadIcon size={16} />
             {t("settings.exportJson")}
           </a>
           <a
             href="/api/export/csv"
-            className="flex items-center gap-2 rounded-full border border-slate-200 px-5 py-2.5 text-sm font-medium text-navy-800 hover:border-navy-600"
+            className="flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-ink-brand hover:border-line-accent"
           >
             <DownloadIcon size={16} />
             {t("settings.exportCsv")}
@@ -54,20 +56,20 @@ export default function Settings() {
 
       {/* 백업(DB 파일)은 내보내기와 목적이 달라 별도 카드 (D33-1) */}
       <Card>
-        <h2 className="mb-2 text-sm font-semibold text-slate-500">{t("settings.backupCardTitle")}</h2>
-        <p className="text-sm text-slate-500">
+        <h2 className="mb-2 text-sm font-semibold text-ink-muted">{t("settings.backupCardTitle")}</h2>
+        <p className="text-sm text-ink-muted">
           {t("settings.dbLocationLabel")}{" "}
-          <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs text-navy-800">data/flights.db</code>
+          <code className="rounded bg-surface-inset px-1.5 py-0.5 text-xs text-ink-brand">data/flights.db</code>
         </p>
-        <p className="mt-1 text-sm text-slate-500">{t("settings.dbLocationDesc")}</p>
+        <p className="mt-1 text-sm text-ink-muted">{t("settings.dbLocationDesc")}</p>
       </Card>
 
       {/* 데이터 출처 카드는 D33/D31로 삭제 — 편수 카운트만 앱 정보로 흡수 (마이그레이션 서비스명 무언급) */}
       <Card>
-        <h2 className="mb-2 text-sm font-semibold text-slate-500">{t("settings.appInfoTitle")}</h2>
-        <p className="text-sm text-navy-800">{health ? `Track My Flights · v${health.version}` : "-"}</p>
+        <h2 className="mb-2 text-sm font-semibold text-ink-muted">{t("settings.appInfoTitle")}</h2>
+        <p className="text-sm text-ink-brand">{health ? `Track My Flights · v${health.version}` : "-"}</p>
         {health && (
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-ink-muted">
             {health.flights.migrated > 0
               ? t("settings.appInfoFlightsMigrated", {
                   total: tn("settings.flightCount", health.flights.total),
@@ -92,7 +94,20 @@ export default function Settings() {
       </Card>
 
       <Card>
-        <h2 className="mb-3 text-sm font-semibold text-slate-500">{t("settings.unitsCardTitle")}</h2>
+        <RadioGroup
+          label={t("settings.themeCardTitle")}
+          value={themePref}
+          onChange={(v) => setThemePref(v as ThemePref)}
+          options={[
+            { value: "auto", label: t("settings.themeAuto") },
+            { value: "light", label: t("settings.themeLight") },
+            { value: "dark", label: t("settings.themeDark") },
+          ]}
+        />
+      </Card>
+
+      <Card>
+        <h2 className="mb-3 text-sm font-semibold text-ink-muted">{t("settings.unitsCardTitle")}</h2>
         <div className="space-y-4">
           <RadioGroup
             label={t("settings.unitsDistanceLabel")}

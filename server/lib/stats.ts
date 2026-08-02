@@ -127,7 +127,7 @@ export function computeStats(year: string | null) {
       routes: routes.length,
       countries: new Set(flights.flatMap((f) => [f.dep_country, f.arr_country]).filter(Boolean)).size,
     },
-    classes: distOf("travel_class", ["economy", "economyplus", "business", "first"]),
+    classes: distOf("travel_class", ["economy", "economyplus", "business", "first", "private"]),
     seatPos: distOf("seat_pos", ["window", "middle", "aisle"]),
     roles: distOf("flight_role", ["passenger", "crew", "cockpit"]),
     reasons: distOf("flight_reason", ["personal", "business", "virtual"]),

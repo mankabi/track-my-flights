@@ -343,13 +343,13 @@ export default function WorldMap({ year = null, className }: WorldMapProps) {
         onDoubleClick={onDoubleClick}
       >
         <g transform={`translate(${view.tx},${view.ty}) scale(${k})`}>
-          <path d={LAND_PATH} fill="#dbe9f8" stroke="#b5d4f4" strokeWidth={0.75 / k} />
+          <path d={LAND_PATH} fill="var(--map-land)" stroke="var(--map-land-line)" strokeWidth={0.75 / k} />
           {arcs.map((arc) => (
             <path
               key={arc.key}
               d={arc.d}
               fill="none"
-              stroke="#185fa5"
+              stroke="var(--map-arc)"
               strokeWidth={(1 + (arc.count / maxArcCount) * 1.5) / k}
               strokeOpacity={0.55}
               strokeLinecap="round"
@@ -361,7 +361,7 @@ export default function WorldMap({ year = null, className }: WorldMapProps) {
               cx={p.x}
               cy={p.y}
               r={(2 + (p.count / maxPointCount) * 2) / k}
-              fill="#0c447c"
+              fill="var(--map-point)"
             />
           ))}
           {labels.map(
@@ -373,7 +373,7 @@ export default function WorldMap({ year = null, className }: WorldMapProps) {
                   y1={l.leader.y1}
                   x2={l.anchor === "end" ? l.x - 1 / k : l.anchor === "start" ? l.x + 1 / k : l.x}
                   y2={l.y - 3 / k}
-                  stroke="#7d9cbd"
+                  stroke="var(--map-point-ring)"
                   strokeWidth={0.6 / k}
                 />
               ),
@@ -386,8 +386,8 @@ export default function WorldMap({ year = null, className }: WorldMapProps) {
               textAnchor={l.anchor}
               fontSize={11 / k}
               fontWeight={600}
-              fill="#042c53"
-              stroke="white"
+              fill="var(--map-marker)"
+              stroke="var(--map-marker-line)"
               strokeWidth={3 / k}
               paintOrder="stroke"
             >
@@ -402,7 +402,7 @@ export default function WorldMap({ year = null, className }: WorldMapProps) {
           type="button"
           onClick={() => zoomButton(1.6)}
           aria-label={t("common.mapZoomIn")}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white/90 text-lg leading-none text-navy-800 hover:bg-sky-100"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-line bg-surface/90 text-lg leading-none text-ink-brand hover:bg-accent-wash"
         >
           +
         </button>
@@ -410,7 +410,7 @@ export default function WorldMap({ year = null, className }: WorldMapProps) {
           type="button"
           onClick={() => zoomButton(1 / 1.6)}
           aria-label={t("common.mapZoomOut")}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white/90 text-lg leading-none text-navy-800 hover:bg-sky-100"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-line bg-surface/90 text-lg leading-none text-ink-brand hover:bg-accent-wash"
         >
           −
         </button>
@@ -419,7 +419,7 @@ export default function WorldMap({ year = null, className }: WorldMapProps) {
             type="button"
             onClick={() => setView(IDENTITY)}
             aria-label={t("common.mapResetZoomAria")}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white/90 text-[10px] leading-none text-navy-800 hover:bg-sky-100"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-line bg-surface/90 text-[10px] leading-none text-ink-brand hover:bg-accent-wash"
           >
             {t("common.mapResetZoom")}
           </button>
@@ -427,13 +427,13 @@ export default function WorldMap({ year = null, className }: WorldMapProps) {
       </div>
 
       {zoomed && (
-        <span className="absolute right-14 top-3 rounded-md bg-white/85 px-2 py-1 text-[11px] leading-none text-slate-500">
+        <span className="absolute right-14 top-3 rounded-md bg-surface/85 px-2 py-1 text-[11px] leading-none text-ink-muted">
           {t("common.mapZoomedHint", { k: k.toFixed(1) })}
         </span>
       )}
 
-      {error && <p className="mt-2 text-sm text-red-600">{t("common.mapLoadError", { error })}</p>}
-      {!data && !error && <p className="mt-2 text-sm text-slate-400">{t("common.mapLoading")}</p>}
+      {error && <p className="mt-2 text-sm text-ink-danger">{t("common.mapLoadError", { error })}</p>}
+      {!data && !error && <p className="mt-2 text-sm text-ink-faint">{t("common.mapLoading")}</p>}
     </div>
   );
 }

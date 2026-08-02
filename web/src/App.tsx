@@ -9,7 +9,7 @@ import Settings from "./pages/Settings";
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#f7f9fc]">
+      <div className="min-h-screen bg-page">
         <NavBar />
         <Routes>
           <Route path="/" element={<Dashboard />} />

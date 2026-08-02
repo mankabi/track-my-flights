@@ -17,8 +17,8 @@ export default function PillTabs({ options, value, onChange, className = "" }: P
             onClick={() => onChange(opt.value)}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
               active
-                ? "bg-navy-900 text-white"
-                : "border border-slate-200 bg-white text-slate-600 hover:border-navy-600 hover:text-navy-800"
+                ? "bg-brand text-ink-inverse"
+                : "border border-line bg-surface text-ink-soft hover:border-line-accent hover:text-ink-brand"
             }`}
           >
             {opt.label}

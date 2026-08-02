@@ -380,24 +380,24 @@ export default function FlightForm() {
   if (loading) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-8">
-        <p className="text-sm text-slate-400">{t("common.loading")}</p>
+        <p className="text-sm text-ink-faint">{t("common.loading")}</p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-6 py-8">
-      <h1 className="text-xl font-semibold text-navy-900">
+      <h1 className="text-xl font-semibold text-ink-title">
         {editingId != null ? t("form.editTitle") : t("form.newTitle")}
       </h1>
 
       {submitError && (
-        <Card className="border-red-200 bg-red-50 text-sm text-red-600">{t("form.saveError", { error: submitError })}</Card>
+        <Card className="border-line-danger-soft bg-danger-wash text-sm text-ink-danger">{t("form.saveError", { error: submitError })}</Card>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
-          <h2 className="mb-4 text-sm font-semibold text-slate-500">{t("form.sectionRoute")}</h2>
+          <h2 className="mb-4 text-sm font-semibold text-ink-muted">{t("form.sectionRoute")}</h2>
           <div className="flex items-end gap-3">
             <div className="flex-1">
               <AirportInput
@@ -412,7 +412,7 @@ export default function FlightForm() {
             <button
               type="button"
               onClick={swap}
-              className="mb-8 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:border-navy-600 hover:text-navy-800"
+              className="mb-8 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line text-ink-muted hover:border-line-accent hover:text-ink-brand"
               aria-label={t("form.swapAria")}
             >
               <SwapIcon size={18} />
@@ -431,7 +431,7 @@ export default function FlightForm() {
         </Card>
 
         <Card>
-          <h2 className="mb-4 text-sm font-semibold text-slate-500">{t("form.sectionDateTime")}</h2>
+          <h2 className="mb-4 text-sm font-semibold text-ink-muted">{t("form.sectionDateTime")}</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <Field label={t("form.depDateLabel")} error={errors.date}>
               <input
@@ -470,10 +470,10 @@ export default function FlightForm() {
         </Card>
 
         <Card>
-          <h2 className="mb-4 text-sm font-semibold text-slate-500">{t("form.sectionAutoCalc")}</h2>
+          <h2 className="mb-4 text-sm font-semibold text-ink-muted">{t("form.sectionAutoCalc")}</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1 block text-xs font-medium text-slate-500">
+              <label className="mb-1 block text-xs font-medium text-ink-muted">
                 {t("form.distanceLabel", { unit: distanceUnit })}
               </label>
               <input
@@ -486,23 +486,23 @@ export default function FlightForm() {
                 className={inputCls(!!errors.distance_km)}
               />
               {errors.distance_km ? (
-                <p className="mt-1 text-xs text-red-600">{errors.distance_km}</p>
+                <p className="mt-1 text-xs text-ink-danger">{errors.distance_km}</p>
               ) : estimating && !distanceTouched ? (
-                <p className="mt-1 text-xs text-slate-400">{t("form.calculating")}</p>
+                <p className="mt-1 text-xs text-ink-faint">{t("form.calculating")}</p>
               ) : distanceTouched ? (
                 <button
                   type="button"
                   onClick={() => setDistanceTouched(false)}
-                  className="mt-1 text-xs text-navy-600 hover:underline"
+                  className="mt-1 text-xs text-ink-accent hover:underline"
                 >
                   {t("form.recalculate")}
                 </button>
               ) : form.distance_km.trim() ? (
-                <p className="mt-1 text-xs text-slate-400">{t("form.autoCalculated")}</p>
+                <p className="mt-1 text-xs text-ink-faint">{t("form.autoCalculated")}</p>
               ) : null}
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-slate-500">{t("form.durationLabel")}</label>
+              <label className="mb-1 block text-xs font-medium text-ink-muted">{t("form.durationLabel")}</label>
               <input
                 type="text"
                 placeholder={t("form.durationPlaceholder")}
@@ -514,28 +514,28 @@ export default function FlightForm() {
                 className={inputCls(!!errors.duration_text)}
               />
               {errors.duration_text ? (
-                <p className="mt-1 text-xs text-red-600">{errors.duration_text}</p>
+                <p className="mt-1 text-xs text-ink-danger">{errors.duration_text}</p>
               ) : estimating && !durationTouched ? (
-                <p className="mt-1 text-xs text-slate-400">{t("form.calculating")}</p>
+                <p className="mt-1 text-xs text-ink-faint">{t("form.calculating")}</p>
               ) : durationTouched ? (
                 <button
                   type="button"
                   onClick={() => setDurationTouched(false)}
-                  className="mt-1 text-xs text-navy-600 hover:underline"
+                  className="mt-1 text-xs text-ink-accent hover:underline"
                 >
                   {t("form.recalculate")}
                 </button>
               ) : form.duration_text.trim() ? (
-                <p className="mt-1 text-xs text-slate-400">{t("form.autoCalculated")}</p>
+                <p className="mt-1 text-xs text-ink-faint">{t("form.autoCalculated")}</p>
               ) : !form.dep_time || !form.arr_time ? (
-                <p className="mt-1 text-xs text-slate-300">{t("form.durationHint")}</p>
+                <p className="mt-1 text-xs text-ink-ghost">{t("form.durationHint")}</p>
               ) : null}
             </div>
           </div>
         </Card>
 
         <Card>
-          <h2 className="mb-4 text-sm font-semibold text-slate-500">{t("form.sectionFlightInfo")}</h2>
+          <h2 className="mb-4 text-sm font-semibold text-ink-muted">{t("form.sectionFlightInfo")}</h2>
           <div className="grid grid-cols-2 gap-4">
             {/* 편명을 먼저 — 편명을 넣으면 항공사가 자동으로 채워지는 흐름(FM 동작)이 자연스럽도록 */}
             <Field label={t("form.flightNoLabel")} help={t("form.flightNoHelp")}>
@@ -621,6 +621,7 @@ export default function FlightForm() {
                 { value: "economyplus", label: t("common.classEconomyPlus") },
                 { value: "business", label: t("common.classBusiness") },
                 { value: "first", label: t("common.classFirst") },
+                { value: "private", label: t("common.classPrivate") },
               ]}
             />
             <RadioGroup
@@ -646,12 +647,12 @@ export default function FlightForm() {
           </div>
 
           <div className="mt-4">
-            <label className="mb-1 block text-xs font-medium text-slate-500">{t("form.commentLabel")}</label>
+            <label className="mb-1 block text-xs font-medium text-ink-muted">{t("form.commentLabel")}</label>
             <textarea
               value={form.comment}
               onChange={(e) => set("comment", e.target.value)}
               rows={3}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-navy-900 focus:border-navy-600 focus:outline-none"
+              className="w-full rounded-xl border border-line px-3 py-2 text-sm text-ink-title focus:border-line-accent focus:outline-none"
             />
           </div>
         </Card>
@@ -660,14 +661,14 @@ export default function FlightForm() {
           <button
             type="button"
             onClick={() => navigate("/flights")}
-            className="rounded-full border border-slate-200 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50"
+            className="rounded-full border border-line px-5 py-2.5 text-sm font-medium text-ink-soft hover:bg-surface-dim"
           >
             {t("form.cancel")}
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="rounded-full bg-navy-900 px-6 py-2.5 text-sm font-medium text-white hover:bg-navy-800 disabled:opacity-50"
+            className="rounded-full bg-brand px-6 py-2.5 text-sm font-medium text-ink-inverse hover:bg-brand-2 disabled:opacity-50"
           >
             {saving ? t("form.saving") : editingId != null ? t("form.updateSubmit") : t("form.createSubmit")}
           </button>
@@ -678,8 +679,8 @@ export default function FlightForm() {
 }
 
 function inputCls(hasError: boolean): string {
-  return `w-full rounded-xl border px-3 py-2 text-sm text-navy-900 focus:outline-none ${
-    hasError ? "border-red-400" : "border-slate-200 focus:border-navy-600"
+  return `w-full rounded-xl border px-3 py-2 text-sm text-ink-title focus:outline-none ${
+    hasError ? "border-line-danger" : "border-line focus:border-line-accent"
   }`;
 }
 
@@ -696,12 +697,12 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-1 block text-xs font-medium text-slate-500">{label}</label>
+      <label className="mb-1 block text-xs font-medium text-ink-muted">{label}</label>
       {children}
       {error ? (
-        <p className="mt-1 text-xs text-red-600">{error}</p>
+        <p className="mt-1 text-xs text-ink-danger">{error}</p>
       ) : help ? (
-        <p className="mt-1 text-xs text-slate-300">{help}</p>
+        <p className="mt-1 text-xs text-ink-ghost">{help}</p>
       ) : null}
     </div>
   );

@@ -109,7 +109,7 @@ export default function AirportInput({ label, value, onChange, resolved, onResol
 
   return (
     <div className="relative">
-      <label className="mb-1 block text-xs font-medium text-slate-500">{label}</label>
+      <label className="mb-1 block text-xs font-medium text-ink-muted">{label}</label>
       <input
         value={value}
         onChange={(e) => handleChange(e.target.value)}
@@ -119,21 +119,21 @@ export default function AirportInput({ label, value, onChange, resolved, onResol
           blurTimer.current = window.setTimeout(() => setOpen(false), 150);
         }}
         placeholder={t("common.airportSearchPlaceholder")}
-        className={`w-full rounded-xl border bg-white px-3 py-2 tracking-wide text-navy-900 transition-all focus:outline-none ${
+        className={`w-full rounded-xl border bg-surface px-3 py-2 tracking-wide text-ink-title transition-all focus:outline-none ${
           isCodeDisplay ? "text-2xl font-semibold" : "text-base font-normal"
-        } ${error ? "border-red-400" : "border-slate-200 focus:border-navy-600"}`}
+        } ${error ? "border-line-danger" : "border-line focus:border-line-accent"}`}
       />
       {resolved ? (
-        <p className="mt-1 truncate text-xs text-slate-500">
+        <p className="mt-1 truncate text-xs text-ink-muted">
           {resolved.city ?? "-"} · {resolved.name}
         </p>
       ) : error ? (
-        <p className="mt-1 text-xs text-red-600">{error}</p>
+        <p className="mt-1 text-xs text-ink-danger">{error}</p>
       ) : (
-        <p className="mt-1 text-xs text-slate-300">{t("common.airportSearchHint")}</p>
+        <p className="mt-1 text-xs text-ink-ghost">{t("common.airportSearchHint")}</p>
       )}
       {open && results.length > 0 && (
-        <ul className="absolute z-20 mt-1 max-h-64 w-full min-w-[320px] overflow-auto rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+        <ul className="absolute z-20 mt-1 max-h-64 w-full min-w-[320px] overflow-auto rounded-xl border border-line bg-surface py-1 shadow-lg">
           {results.map((r, i) => (
             <li key={r.iata}>
               <button
@@ -142,19 +142,19 @@ export default function AirportInput({ label, value, onChange, resolved, onResol
                 onMouseEnter={() => setActiveIndex(i)}
                 onClick={() => selectResult(r)}
                 className={`flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm ${
-                  i === activeIndex ? "bg-sky-100/60" : "hover:bg-sky-100/60"
+                  i === activeIndex ? "bg-accent-wash/60" : "hover:bg-accent-wash/60"
                 }`}
               >
                 <span className="min-w-0">
                   <span className="flex items-baseline gap-2">
-                    <span className="shrink-0 font-semibold text-navy-900">{r.iata}</span>
-                    <span className="truncate text-slate-600">{r.city ?? "-"}</span>
+                    <span className="shrink-0 font-semibold text-ink-title">{r.iata}</span>
+                    <span className="truncate text-ink-soft">{r.city ?? "-"}</span>
                   </span>
-                  <span className="block truncate text-xs text-slate-400">
+                  <span className="block truncate text-xs text-ink-faint">
                     {r.name} · {r.country}
                   </span>
                 </span>
-                {r.used > 0 && <span className="shrink-0 text-xs text-slate-400">{tn("common.usedCount", r.used)}</span>}
+                {r.used > 0 && <span className="shrink-0 text-xs text-ink-faint">{tn("common.usedCount", r.used)}</span>}
               </button>
             </li>
           ))}

@@ -16,7 +16,7 @@
 - **빠른 입력** — 공항·항공사 자동완성(코드, 도시, 이름 무엇으로든 검색), 편명으로 항공사 자동 채움, 대권거리와 타임존·서머타임을 반영한 비행시간 자동 계산.
 - **대시보드와 세계 지도** — 오프라인 벡터 지도 위의 노선 곡선, 확대·이동 지원, 예정된 비행과 최근 비행.
 - **통계** — 누적, 기록, 노선·공항·항공사·기종 Top 10, 연도별 표, 등급·좌석·탑승 역할 분포.
-- **내 데이터, 내 손에** — 클릭 한 번으로 JSON/CSV 내보내기, JSON 가져오기, DB는 그냥 복사하면 되는 파일 하나.
+- **내 데이터, 내 손에** — 클릭 한 번으로 JSON/CSV 내보내기, JSON 가져오기, MyFlightRadar24 CSV 가져오기, DB는 그냥 복사하면 되는 파일 하나.
 - **한국어·영어 UI**, km/mi 및 12/24시간 표시 설정(브라우저 로케일 기준 기본값). 언어 추가는 JSON 파일 하나면 됩니다.
 
 ### 화면 둘러보기
@@ -37,8 +37,11 @@
 
 ## 요구 사항
 
-- Node.js 20 이상, npm
-- macOS, Linux, Windows (better-sqlite3를 네이티브로 빌드합니다. macOS에서는 Xcode Command Line Tools가 필요합니다)
+- **Node.js 20 이상, npm** — [nodejs.org](https://nodejs.org/)에서 설치하세요(Windows/macOS는 설치 프로그램, Linux는 평소 쓰는 패키지 매니저로).
+- **C++ 빌드 도구는 폴백으로만 필요합니다.** `better-sqlite3`(SQLite 드라이버)는 대부분의 플랫폼·Node 버전에 미리 빌드된 바이너리를 제공하므로 `npm install` 한 번이면 대개 그걸로 끝입니다 — SQLite 자체를 따로 설치할 필요는 **없습니다**, better-sqlite3가 SQLite를 내장하고 있습니다. 내 환경에 딱 맞는 빌드가 없을 때만 npm이 소스에서 직접 컴파일하는데, 이때는 컴파일러가 필요합니다:
+  - **Windows**: 가장 쉬운 방법은 [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/)("Tools for Visual Studio" 아래) 설치 — 설치 중 **"Desktop development with C++"**를 체크하세요. [Chocolatey](https://chocolatey.org/)가 있다면 한 줄로 끝납니다: `choco install python visualstudio2022-workload-vctools -y`.
+  - **macOS**: `xcode-select --install`.
+  - **Linux**: C/C++ 툴체인 하나면 됩니다(예: Debian/Ubuntu는 `sudo apt install build-essential`) — 보통 이미 깔려 있습니다.
 
 ## 빠른 시작
 
@@ -61,11 +64,19 @@ npm start        # → http://localhost:7470
 npm run import:json -- my-flights.json
 ```
 
+**MyFlightRadar24**를 쓰고 있다면 설정 페이지에서 CSV로 내보낸 파일을 바로 넣을 수 있습니다 — 공항·항공사는 내장 참조 데이터로 해석되고, 대권거리 계산과 (비행시간으로부터의) 도착일 추정까지 자동입니다:
+
+```bash
+npm run import:fr24 -- my-flights.csv
+```
+
+해석할 수 없는 행(참조 데이터에 없는 공항, 못 읽는 값)은 추측으로 채우지 않고 건너뛴 뒤 리포트로 알려줍니다. 열·값 매핑 전체는 [docs/MIGRATION.md](docs/MIGRATION.md)를 보세요. 솔직한 범위 고지: 이 임포터는 FR24가 문서화한 내보내기 형식대로 손으로 만든 합성 CSV로만 검증했습니다 — 실제 내려받은 파일이 깨끗하게 안 들어가면 이슈를 열어주세요.
+
 원한다면 예전 시스템이 보여주던 통계(총 비행거리, 최다 노선 등)를 `migration/anchors.json`에 적어두고(`migration/anchors.example.json`에서 시작하세요) `npm run verify`를 돌려보세요. 가져온 데이터베이스를 그 숫자들과 대조해서, 옮기는 과정에서 아무것도 잃지 않았음을 *확인*시켜 줍니다. 이 검증 루프가 이 프로젝트의 핵심입니다 — 숫자는 이사를 견뎌야 합니다.
 
 ## 백업과 복원
 
-기록 전체가 `data/flights.db` 하나입니다. 이 파일을 아무 데나 복사해두면 됩니다(WAL 모드라서 서버를 먼저 멈추거나, 켜둔 채라면 `sqlite3 data/flights.db ".backup 'backup.db'"`를 쓰세요). 복원은 파일을 제자리에 돌려놓기만 하면 됩니다. JSON 내보내기·가져오기도 손실 없이 왕복합니다(`설정 → 내보내기` 후 `npm run import:json`).
+기록 전체가 `data/flights.db` 하나입니다. 이 파일을 아무 데나 복사해두면 됩니다(WAL 모드라서 서버를 먼저 멈추거나, 켜둔 채라면 `sqlite3 data/flights.db ".backup 'backup.db'"`를 쓰세요 — Windows에는 이 CLI가 기본으로 안 깔려 있으니, SQLite의 [Precompiled Binaries for Windows](https://www.sqlite.org/download.html)에서 받거나, 그냥 서버를 멈추고 파일만 복사하면 별도 도구 없이도 됩니다). 복원은 파일을 제자리에 돌려놓기만 하면 됩니다. JSON 내보내기·가져오기도 손실 없이 왕복합니다(`설정 → 내보내기` 후 `npm run import:json`).
 
 ## 계속 띄워두기 (macOS 예시)
 

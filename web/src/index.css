@@ -1,17 +1,140 @@
 @import "tailwindcss";
 
+/* 색상은 시맨틱 토큰만 사용 — raw 팔레트/hex/dark: 금지, theme:check가 강제함 */
+
+:root {
+  color-scheme: light;
+
+  --t-page: #f7f9fc;
+  --t-surface: #ffffff;
+  --t-surface-dim: #f8fafc;
+  --t-surface-inset: #f1f5f9;
+  --t-accent-wash: #e6f1fb;
+  --t-brand: #042c53;
+  --t-brand-2: #0c447c;
+  --t-accent: #185fa5;
+  --t-scrim: #041c38;
+  --t-danger: #dc2626;
+  --t-danger-strong: #b91c1c;
+  --t-danger-wash: #fef2f2;
+  --t-ink: #1c2733;
+  --t-ink-title: #042c53;
+  --t-ink-brand: #0c447c;
+  --t-ink-accent: #185fa5;
+  --t-ink-accent-soft: #85b7eb;
+  --t-ink-soft: #475569;
+  --t-ink-muted: #64748b;
+  --t-ink-faint: #94a3b8;
+  --t-ink-ghost: #cbd5e1;
+  --t-ink-inverse: #ffffff;
+  --t-ink-danger: #dc2626;
+  --t-line: #e2e8f0;
+  --t-line-soft: #f1f5f9;
+  --t-line-accent: #185fa5;
+  --t-line-danger: #f87171;
+  --t-line-danger-soft: #fecaca;
+
+  /* Tailwind 밖(SVG/inline style)에서만 쓰는 플레인 변수 — @theme에는 올리지 않는다 */
+  --map-land: #dbe9f8;
+  --map-land-line: #b5d4f4;
+  --map-arc: #185fa5;
+  --map-point: #0c447c;
+  --map-point-ring: #7d9cbd;
+  --map-marker: #042c53;
+  --map-marker-line: #ffffff;
+
+  --chart-1: #0c447c;
+  --chart-2: #185fa5;
+  --chart-3: #85b7eb;
+  --chart-4: #b9d6f2;
+  --chart-5: #e2e8f0;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --t-page: #060f1c;
+  --t-surface: #0c1c30;
+  --t-surface-dim: #0a1828;
+  --t-surface-inset: #14263c;
+  --t-accent-wash: #102c49;
+  --t-brand: #1b64ab;
+  --t-brand-2: #2a76c2;
+  --t-accent: #3f8ad3;
+  --t-scrim: #020810;
+  --t-danger: #d6453c;
+  --t-danger-strong: #b0362e;
+  --t-danger-wash: #2b1416;
+  --t-ink: #d8e2ee;
+  --t-ink-title: #eef5fc;
+  --t-ink-brand: #a6c9ee;
+  --t-ink-accent: #85b7eb;
+  --t-ink-accent-soft: #85b7eb;
+  --t-ink-soft: #a7b8cb;
+  --t-ink-muted: #8798ad;
+  --t-ink-faint: #66798f;
+  --t-ink-ghost: #465a70;
+  --t-ink-inverse: #f2f7fc;
+  --t-ink-danger: #f08d85;
+  --t-line: #223650;
+  --t-line-soft: #182a40;
+  --t-line-accent: #3f8ad3;
+  --t-line-danger: #a04a44;
+  --t-line-danger-soft: #57282a;
+
+  --map-land: #10233a;
+  --map-land-line: #1e4066;
+  --map-arc: #57a0e5;
+  --map-point: #85b7eb;
+  --map-point-ring: #3c5f85;
+  --map-marker: #d9e9fb;
+  --map-marker-line: #0c1c30;
+
+  --chart-1: #2f7cc4;
+  --chart-2: #4f94d9;
+  --chart-3: #85b7eb;
+  --chart-4: #b9d6f2;
+  --chart-5: #33475c;
+}
+
 @theme {
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, sans-serif;
-  --color-navy-950: #041c38;
-  --color-navy-900: #042c53;
-  --color-navy-800: #0c447c;
-  --color-navy-600: #185fa5;
-  --color-sky-300: #85b7eb;
-  --color-sky-100: #e6f1fb;
+}
+
+/* @theme inline 필수: 플레인 @theme은 --color-* 값을 빌드타임에 구워버려 런타임 다크 전환이 안 된다. */
+@theme inline {
+  --color-page: var(--t-page);
+  --color-surface: var(--t-surface);
+  --color-surface-dim: var(--t-surface-dim);
+  --color-surface-inset: var(--t-surface-inset);
+  --color-accent-wash: var(--t-accent-wash);
+  --color-brand: var(--t-brand);
+  --color-brand-2: var(--t-brand-2);
+  --color-accent: var(--t-accent);
+  --color-scrim: var(--t-scrim);
+  --color-danger: var(--t-danger);
+  --color-danger-strong: var(--t-danger-strong);
+  --color-danger-wash: var(--t-danger-wash);
+  --color-ink: var(--t-ink);
+  --color-ink-title: var(--t-ink-title);
+  --color-ink-brand: var(--t-ink-brand);
+  --color-ink-accent: var(--t-ink-accent);
+  --color-ink-accent-soft: var(--t-ink-accent-soft);
+  --color-ink-soft: var(--t-ink-soft);
+  --color-ink-muted: var(--t-ink-muted);
+  --color-ink-faint: var(--t-ink-faint);
+  --color-ink-ghost: var(--t-ink-ghost);
+  --color-ink-inverse: var(--t-ink-inverse);
+  --color-ink-danger: var(--t-ink-danger);
+  --color-line: var(--t-line);
+  --color-line-soft: var(--t-line-soft);
+  --color-line-accent: var(--t-line-accent);
+  --color-line-danger: var(--t-line-danger);
+  --color-line-danger-soft: var(--t-line-danger-soft);
 }
 
 body {
   font-family: var(--font-sans);
-  background: #f7f9fc;
-  color: #1c2733;
+  background: var(--t-page);
+  color: var(--t-ink);
 }
