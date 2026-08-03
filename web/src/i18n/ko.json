@@ -15,6 +15,7 @@
   "common.airlineSearchPlaceholder": "예: KE 또는 Korean Air",
   "common.airlineSearchHint": "항공사 코드·이름으로 검색",
   "common.airlineNoMatch": "참조DB에 없음 — 입력한 그대로 저장됩니다",
+  "common.pickFromList": "후보에서 선택하세요",
   "common.classEconomy": "이코노미",
   "common.classEconomyPlus": "이코노미 플러스",
   "common.classBusiness": "비즈니스",

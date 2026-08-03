@@ -15,6 +15,7 @@
   "common.airlineSearchPlaceholder": "e.g. KE or Korean Air",
   "common.airlineSearchHint": "Search by airline code or name",
   "common.airlineNoMatch": "Not in reference database — will be saved exactly as entered",
+  "common.pickFromList": "Pick one from the list",
   "common.classEconomy": "Economy",
   "common.classEconomyPlus": "Economy Plus",
   "common.classBusiness": "Business",

@@ -14,7 +14,7 @@
     "seed:airports": "tsx scripts/seed-airports.ts",
     "seed:airlines": "tsx scripts/seed-airlines.ts",
     "verify": "tsx migration/verify.ts",
-    "test": "tsx --test server/lib/*.test.ts migration/*.test.ts migration/lib/*.test.ts",
+    "test": "tsx --test server/lib/*.test.ts migration/*.test.ts migration/lib/*.test.ts web/src/lib/*.test.ts",
     "i18n:check": "node scripts/i18n-check.mjs",
     "theme:check": "node scripts/theme-check.mjs",
     "import:json": "tsx migration/import-json.ts",
