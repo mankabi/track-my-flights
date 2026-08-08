@@ -76,7 +76,7 @@ Rows the importer can't place (an airport missing from the reference data, an un
 
 ## Backup & restore
 
-The entire log is `data/flights.db`. Copy that file anywhere (it uses WAL mode — stop the server first, or use `sqlite3 data/flights.db ".backup 'backup.db'"` while running; on Windows that CLI isn't preinstalled — grab it from SQLite's [Precompiled Binaries for Windows](https://www.sqlite.org/download.html), or just stop the server and copy the file, no extra tools needed). Restoring = putting the file back. JSON export/import round-trips losslessly too (`Settings → Export`, then `npm run import:json`).
+The entire log is `data/flights.db`, `data/flights.db-wal`, `data/flights.db-shm`. Copy those file anywhere to backup. Restoring = putting the file back.
 
 ## Keeping it running (macOS example)
 

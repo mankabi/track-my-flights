@@ -76,7 +76,8 @@ npm run import:fr24 -- my-flights.csv
 
 ## 백업과 복원
 
-기록 전체가 `data/flights.db` 하나입니다. 이 파일을 아무 데나 복사해두면 됩니다(WAL 모드라서 서버를 먼저 멈추거나, 켜둔 채라면 `sqlite3 data/flights.db ".backup 'backup.db'"`를 쓰세요 — Windows에는 이 CLI가 기본으로 안 깔려 있으니, SQLite의 [Precompiled Binaries for Windows](https://www.sqlite.org/download.html)에서 받거나, 그냥 서버를 멈추고 파일만 복사하면 별도 도구 없이도 됩니다). 복원은 파일을 제자리에 돌려놓기만 하면 됩니다. JSON 내보내기·가져오기도 손실 없이 왕복합니다(`설정 → 내보내기` 후 `npm run import:json`).
+기록 전체가 `data/flights.db`, `data/flights.db-wal`, `data/flights.db-shm` 입니다. 이 파일들을 아무 데나 복사해두면 됩니다.
+복원은 파일을 제자리에 돌려놓기만 하면 됩니다.
 
 ## 계속 띄워두기 (macOS 예시)
 
